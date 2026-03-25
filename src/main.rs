@@ -1,8 +1,8 @@
 
-use opentelemetry::trace::TraceContextExt;
-use opentelemetry::trace::TracerProvider;
 use salvo::Writer;
 use salvo::Listener;
+use opentelemetry::trace::TracerProvider;
+use opentelemetry::trace::TraceContextExt;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 async fn ensure_nats_stream(nats: async_nats::Client, name: String) -> Result<(), async_nats::error::Error<async_nats::jetstream::context::CreateStreamErrorKind>> {
@@ -16,7 +16,7 @@ async fn ensure_nats_stream(nats: async_nats::Client, name: String) -> Result<()
     })
         .await;
 
-    if let Ok(_) = result {
+    if result.is_ok() {
         return Ok(());
     }
 
@@ -167,8 +167,6 @@ mod tests {
                             .await
                             .expect("failed to clean up object store");
                     }
-
-                    return;
                 })
             }
         )
@@ -193,20 +191,20 @@ mod tests {
         let s = js.get_stream("saf")
             .await;
 
-        assert_eq!(s.is_ok(), true);
+        assert!(s.is_ok());
 
         let msg = s
             .unwrap()
             .get_last_raw_message_by_subject("saf.ren.ger")
             .await;
 
-        assert_eq!(msg.is_ok(), true);
+        assert!(msg.is_ok());
 
         let payload = msg.unwrap().payload;
 
         let payload = std::str::from_utf8(&payload);
 
-        assert_eq!(payload.is_ok(), true);
+        assert!(payload.is_ok());
 
         assert_eq!(payload.unwrap(), "{\"for\":\"see\",\"sum\":2}");
 
