@@ -36,8 +36,6 @@ jobs:
     services:
       nats:
         image: nats:2-alpine
-        ports:
-          - 5222:4222
     container:
       image: xd009642/tarpaulin:0.35.2-slim
       options: --security-opt seccomp=unconfined
@@ -47,7 +45,7 @@ jobs:
       - name: Run tarpaulin
         run: cargo tarpaulin --all-features --out xml
         env:
-          NATS_URL: nats://localhost:5222
+          NATS_URL: nats://nats:4222
 
       - name: Upload to codecov
         uses: codecov/codecov-action@v5
