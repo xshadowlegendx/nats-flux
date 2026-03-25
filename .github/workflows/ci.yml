@@ -33,19 +33,20 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    services:
-      nats:
-        image: nats:2-alpine
     container:
       image: xd009642/tarpaulin:0.35.2-slim
       options: --security-opt seccomp=unconfined
     steps:
       - uses: actions/checkout@v6
 
+      - uses: docker://docker
+        with:
+          args: docker container run -d --rm -it --name nats -p 5222:4222 nats:2-alpine -js
+
       - name: Run tarpaulin
         run: cargo tarpaulin --all-features --out xml
         env:
-          NATS_URL: nats://nats:4222
+          NATS_URL: nats://localhost:5222
 
       - name: Upload to codecov
         uses: codecov/codecov-action@v5
