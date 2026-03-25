@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-flux
+data:
+  NATS_URL: nats://nats:4222
+  OTEL_SERVICE_NAME: nats-flux
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:5080/api/default
+  OTEL_EXPORTER_OTLP_HEADERS: stream-name=default

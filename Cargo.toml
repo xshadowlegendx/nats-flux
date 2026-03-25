@@ -1,0 +1,18 @@
+[package]
+name = "nats-flux"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tracing = "0.1.44"
+async-nats = "0.46.0"
+tokio = { version = "1.50.0", features = ["macros"] }
+salvo = { version = "0.89.3", features = ["oapi", "otel", "affix-state"] }
+tracing-subscriber = { version = "0.3.23", features = ["json", "env-filter"] }
+tracing-opentelemetry = "0.32.1"
+opentelemetry = "0.31.0"
+opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio"] }
+opentelemetry-otlp = { version = "0.31.1", features = ["tonic", "trace", "http-proto"] }
+
+[dev-dependencies]
+serde_json = "1.0.149"

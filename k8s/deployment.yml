@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-flux
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: nats-flux
+  template:
+    metadata:
+      labels:
+        app: nats-flux
+    spec:
+      securityContext:
+        runAsNonRoot: true
+
+      containers:
+      - name: nats-flux
+        image: ghcr.io/xshadowlegendx/nats-flux:0.1.0
+
+        securityContext:
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 20m
+            memory: 32m
+
+        ports:
+        - name: http
+          containerPort: 5629
+
+        envFrom:
+        - configMapRef:
+            name: nats-flux

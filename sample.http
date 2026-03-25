@@ -1,0 +1,22 @@
+
+# sample save message 0
+POST http://localhost:5629/stream0/user/registered
+content-type: application/json
+x-nats-msg-id: b350bb04-2605-11f1-9582-f39ae68f6606
+
+{
+    "id": "b350bb04-2605-11f1-9582-f39ae68f6606",
+    "name": "luthor"
+}
+
+###
+
+# sample save message 1
+POST http://localhost:5629/stream0/user/b350bb04-2605-11f1-9582-f39ae68f6606/top-ups
+content-type: application/json
+x-nats-msg-id: ec64c476-2605-11f1-b613-9b9dea59c93a
+
+{
+    "id": "ec64c476-2605-11f1-b613-9b9dea59c93a",
+    "amount_in_usd": "2000"
+}

@@ -1,0 +1,6 @@
+
+docker_build('ghcr.io/xshadowlegendx/nats-flux:0.1.0', '.')
+
+k8s_yaml(kustomize('k8s/', flags=['--enable-helm']))
+
+k8s_resource(workload='nats-flux', port_forwards=5629)
