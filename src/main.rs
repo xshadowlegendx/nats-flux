@@ -10,6 +10,8 @@ async fn ensure_nats_stream(nats: async_nats::Client, name: String) -> Result<()
 
     let result = js.create_stream(async_nats::jetstream::stream::Config{
         name: name.clone(),
+        deny_purge: true,
+        allow_message_ttl: true,
         retention: async_nats::jetstream::stream::RetentionPolicy::Limits,
         subjects: vec![format!("{}.>", name)],
         ..Default::default()
@@ -63,6 +65,10 @@ async fn save_message(
     if let Some(id) = req.header::<&str>("x-nats-msg-id") {
         headers.append("Nats-Msg-Id", id);
         tracing_span.set_attribute(opentelemetry::KeyValue::new("nats-msg-id", id.to_string()));
+    }
+    if let Some(msg_ttl) = req.header::<&str>("x-nats-msg-ttl") {
+        headers.append("Nats-TTL", msg_ttl);
+        tracing_span.set_attribute(opentelemetry::KeyValue::new("nats-msg-ttl", msg_ttl.to_string()));
     }
 
     let result = nats_client
