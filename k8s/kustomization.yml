@@ -1,22 +1,4 @@
 
-helmCharts:
-- name: nats
-  includeCRDs: false
-  releaseName: nats
-  repo: https://nats-io.github.io/k8s/helm/charts/
-  version: 2.12.5
-  valuesInline:
-    config:
-      cluster:
-        enabled: true
-
-      jetstream:
-        enabled: true
-
-        fileStore:
-          pvc:
-            size: 2Gi
-
 resources:
 - config.yml
 - service.yml

@@ -1,4 +1,9 @@
 
+load('ext://helm_resource', 'helm_resource', 'helm_repo')
+
+helm_repo('natsio', 'https://nats-io.github.io/k8s/helm/charts')
+helm_resource('nats', 'natsio/nats', resource_deps=['natsio'])
+
 docker_build('ghcr.io/xshadowlegendx/nats-flux:0.1.0', '.')
 
 k8s_yaml(kustomize('k8s/', flags=['--enable-helm']))
