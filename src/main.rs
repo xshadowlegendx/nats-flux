@@ -8,7 +8,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 async fn ensure_nats_stream(nats: async_nats::Client, name: String) -> Result<(), async_nats::error::Error<async_nats::jetstream::context::CreateStreamErrorKind>> {
     let js = async_nats::jetstream::new(nats);
 
-    let result = js.create_stream(async_nats::jetstream::stream::Config{
+    let result = js.get_or_create_stream(async_nats::jetstream::stream::Config{
         name: name.clone(),
         deny_purge: true,
         allow_message_ttl: true,
