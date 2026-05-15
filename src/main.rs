@@ -115,18 +115,24 @@ async fn main() {
         .bind()
         .await;
 
-    let router = router(nats_client);
+    let max_payload_size = std::env::var("MAX_PAYLOAD_SIZE_IN_BYTES")
+        .unwrap_or_else(|_| "65536".to_string())
+        .parse::<usize>()
+        .expect("failed to parse MAX_PAYLOAD_SIZE_IN_BYTES");
+
+    let router = router(nats_client, max_payload_size);
 
     salvo::prelude::Server::new(listener)
         .serve(router)
         .await;
 }
 
-fn router(nats_client: async_nats::Client) -> salvo::Router {
+fn router(nats_client: async_nats::Client, max_payload_size_in_bytes: usize) -> salvo::Router {
     salvo::prelude::Router::with_path("{stream}/{*subjs}")
         .hoop(salvo::affix_state::inject(nats_client))
         .hoop(salvo::otel::Metrics::new())
         .hoop(salvo::otel::Tracing::new(init_tracer_provider().tracer("app")))
+        .hoop(salvo::http::request::SecureMaxSize::new(max_payload_size_in_bytes))
         .post(save_message)
 }
 
@@ -153,7 +159,7 @@ mod tests {
             .await
             .expect("failed to connect to nats");
 
-        let router = super::router(nats_client.clone());
+        let router = super::router(nats_client.clone(), 65536);
 
         (
             salvo::prelude::Service::new(router),
